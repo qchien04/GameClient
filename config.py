@@ -1,4 +1,5 @@
 
+from pathlib import Path
 class Config:
     PLAYERID=1
     ENEMYID=2
@@ -30,7 +31,8 @@ class Config:
     BLACK = 'Black'
     
     # Paths
-    PREFIX="E:/PythonCode/GameV2/resources/"
+    PREFIX=Path(__file__).resolve().parent.parent.__str__()+"/resources/"
+    print(PREFIX)
     ASSETS_PATH = PREFIX+ 'asset2/'
     SOUND_PATH = PREFIX+ 'Sound/'
     FONT_PATH = PREFIX+'fonts/VCR_OSD_MONO_1.001.ttf'
