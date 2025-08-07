@@ -286,6 +286,7 @@ class UIManager:
                 print(f"Logged in as {username}")
                 Config.PLAYERID=self.client_connect.user_id
                 self.client_connect.create_room("Room 1", 4)
+                self.client_connect.list_rooms()
                 self.rooms=self.client_connect.rooms
             else:
                 self.login_error = "Invalid credentials"
