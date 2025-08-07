@@ -281,15 +281,12 @@ class UIManager:
         if self.login_button.draw(self.screen):
             username = self.username_box.text
             password = self.password_box.text
-            if username == "admin" and password == "123":
-                if self.client_connect.login(username, password):
-                    self.game_state.state = ConnectionState.AUTHENTICATED
-                    print(f"Logged in as {username}")
-                    Config.PLAYERID=self.client_connect.user_id
-                    self.rooms=self.client_connect.rooms
-                else:
-                    print("Login failed")
-                
+            if self.client_connect.login(username, password):
+                self.game_state.state = ConnectionState.AUTHENTICATED
+                print(f"Logged in as {username}")
+                Config.PLAYERID=self.client_connect.user_id
+                self.client_connect.create_room("Room 1", 4)
+                self.rooms=self.client_connect.rooms
             else:
                 self.login_error = "Invalid credentials"
 
