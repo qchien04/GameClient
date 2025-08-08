@@ -291,7 +291,6 @@ class UIManager:
                 self.client_connect.list_rooms()
                 
                 self.rooms=self.client_connect.rooms
-                self.add_test_rooms()
             else:
                 self.login_error = "Invalid credentials"
 
@@ -299,13 +298,6 @@ class UIManager:
         if self.login_error:
             err_surface = self.font_24.render(self.login_error, True, (255, 0, 0))
             self.screen.blit(err_surface, (400, 460))
-
-    def add_test_rooms(self):
-        self.rooms = [
-            Room(1, "Phòng 1", 2, 4, 0,["chien","cac"],1),
-            Room(2, "Phòng 2", 1, 4, 0,["chien","cac"],2),
-            Room(3, "Phòng 3", 3, 4, 0,["chien","cac"],3),
-        ]
 
     def render_room(self):
         """Render UI khi đã vào trong phòng"""
