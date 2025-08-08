@@ -304,7 +304,7 @@ class UIManager:
         self.screen.blit(self.bg_menu, (0, 0))
         pygame.mouse.set_visible(True)
 
-        room = self.game_state.current_room
+        room = self.client_connect.current_room
 
         # Tiêu đề
         title_surface = self.font_48.render(f"Phòng: {room.room_name}", True, (255, 255, 255))

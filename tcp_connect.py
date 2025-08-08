@@ -507,6 +507,7 @@ class GameClient:
         
         # Update current room if it's the same
         if room_id == self.current_room_id:
+            print("Update room",room_id)
             self.current_room = Room(room_id, room_name, current_players, max_players, state, players)
             logger.info(f"Room {room_name} updated: {current_players}/{max_players} players")
             logger.info(f"Players: {', '.join(players)}")
