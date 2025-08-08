@@ -113,7 +113,7 @@ class UIManager:
         center_x = Config.SCREEN_WIDTH // 2 - 100
         
         self.buttons = {
-            'start': Button(center_x, Config.SCREEN_HEIGHT // 2 - 300, 
+            'start': Button(center_x, Config.SCREEN_HEIGHT // 2 + 50, 
                                  self.button_images['start'], 1),
             'exit': Button(center_x, Config.SCREEN_HEIGHT // 2 - 150, 
                                 self.button_images['exit'], 1),
@@ -171,6 +171,7 @@ class UIManager:
         elif self.game_state.state == ConnectionState.AUTHENTICATED:
             self.render_list_room()
         elif self.game_state.state == ConnectionState.IN_ROOM:
+            self.render_room()
             if self.handle_start_button():
                 self.game_state.start_game = True
 
@@ -204,8 +205,12 @@ class UIManager:
                 break  # Chỉ xử lý 1 lần
 
             self.join_buttons.append(join_button)
-
-        
+        create_button = Button(600, Config.SCREEN_HEIGHT - 110, self.button_images['start'], 1)
+        if create_button.draw(self.screen):
+            print(f"Tạo phòng")
+            self.client_connect.create_room("P1")
+            self.game_state.current_room = Room(1, "P1", 1, 4, 0,[self.client_connect.username],self.client_connect.user_id)
+            self.game_state.state = ConnectionState.IN_ROOM
     def render_pause(self):
         """Render pause menu"""
         pygame.mouse.set_visible(True)
@@ -263,9 +268,7 @@ class UIManager:
 
         # Handle text inputs
         self.username_box.handle_event(event)
-        self.password_box.handle_event(event)
-
-        
+        self.password_box.handle_event(event)       
 
     def render_login_screen(self):
         # Draw labels
@@ -285,9 +288,10 @@ class UIManager:
                 self.game_state.state = ConnectionState.AUTHENTICATED
                 print(f"Logged in as {username}")
                 Config.PLAYERID=self.client_connect.user_id
-                self.client_connect.create_room("Room 1", 4)
                 self.client_connect.list_rooms()
+                
                 self.rooms=self.client_connect.rooms
+                self.add_test_rooms()
             else:
                 self.login_error = "Invalid credentials"
 
@@ -298,7 +302,51 @@ class UIManager:
 
     def add_test_rooms(self):
         self.rooms = [
-            Room(1, "Phòng 1", 2, 4, 0),
-            Room(2, "Phòng 2", 1, 4, 0),
-            Room(3, "Phòng 3", 3, 4, 0),
+            Room(1, "Phòng 1", 2, 4, 0,["chien","cac"],1),
+            Room(2, "Phòng 2", 1, 4, 0,["chien","cac"],2),
+            Room(3, "Phòng 3", 3, 4, 0,["chien","cac"],3),
         ]
+
+    def render_room(self):
+        """Render UI khi đã vào trong phòng"""
+        self.screen.blit(self.bg_menu, (0, 0))
+        pygame.mouse.set_visible(True)
+
+        room = self.game_state.current_room
+
+        # Tiêu đề
+        title_surface = self.font_48.render(f"Phòng: {room.room_name}", True, (255, 255, 255))
+        self.screen.blit(title_surface, (Config.SCREEN_WIDTH // 2 - title_surface.get_width() // 2, 50))
+
+        # Thông tin phòng
+        info_text = f"Số người chơi: {room.current_players}/{room.max_players}"
+        info_surface = self.font_24.render(info_text, True, (255, 255, 255))
+        self.screen.blit(info_surface, (Config.SCREEN_WIDTH // 2 - info_surface.get_width() // 2, 120))
+         # Danh sách người chơi
+        player_list_surface = self.font_24.render("Người chơi:", True, (255, 255, 255))
+        self.screen.blit(player_list_surface, (100, 200))
+
+        for i, player_name in enumerate(room.players):
+            player_surface = self.font_24.render(f"- {player_name}", True, (200, 200, 200))
+            self.screen.blit(player_surface, (120, 240 + i * 30))
+
+        # Nút bắt đầu nếu là chủ phòng (giả sử user_id == room.owner_id)
+        if self.client_connect.user_id == room.owner_id:
+            start_surface = self.font_24.render("Bạn là chủ phòng. Bấm Start khi sẵn sàng!", True, (0, 255, 0))
+            self.screen.blit(start_surface, (Config.SCREEN_WIDTH // 2 - start_surface.get_width() // 2, 180))
+
+            if self.handle_start_button():
+                print("Game bắt đầu!")
+                self.game_state.start_game = True  # Gắn cờ để vào game
+        else:
+            waiting_surface = self.font_24.render("Chờ chủ phòng bắt đầu...", True, (255, 255, 0))
+            self.screen.blit(waiting_surface, (Config.SCREEN_WIDTH // 2 - waiting_surface.get_width() // 2, 180))
+
+        # Nút thoát phòng
+        back_image = pygame.transform.scale(self.button_images['menu'], (150, 70))
+        back_button = Button(Config.SCREEN_WIDTH - 205, Config.SCREEN_HEIGHT - 120, back_image, 1)
+        if back_button.draw(self.screen):
+            print("Thoát phòng.")
+            self.game_state.state = ConnectionState.AUTHENTICATED
+            self.client_connect.list_rooms()
+            self.rooms = self.client_connect.rooms

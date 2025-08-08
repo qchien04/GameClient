@@ -7,6 +7,7 @@ from enum import IntEnum
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Callable
 import logging
+from .config import Config
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -91,13 +92,14 @@ class Room:
     max_players: int
     state: int
     players: List[str] = None
-    
+    owner_id: int = 0
+
     def __post_init__(self):
         if self.players is None:
             self.players = []
 
 class GameClient:
-    def __init__(self, host: str = '192.168.1.40', tcp_port: int = 8112, udp_port: int = 8113):
+    def __init__(self, host: str = Config.SERVER_IP, tcp_port: int = Config.SERVER_PORT_TCP, udp_port: int = Config.SERVER_PORT_UDP):
         self.host = host
         self.tcp_port = tcp_port
         self.udp_port = udp_port
@@ -631,50 +633,6 @@ class GameClient:
             return self.rooms.copy()
         return []
     
-    # def list_rooms(self, timeout: float = 10.0) -> List[Room]:
-    #     """Get list of available rooms"""
-    #     if self.state != ConnectionState.AUTHENTICATED:
-    #         logger.error("Must be authenticated to list rooms")
-    #         return []
-        
-    #     response = self._send_message_and_wait(MessageType.LIST_ROOMS_REQUEST, b'', timeout)
-    #     if not response:
-    #         return []
-
-    #     payload = response.payload
-
-    #     ptr = 0
-
-    #     room_count = int.from_bytes(payload[ptr:ptr+4], 'big')
-    #     ptr += 4
-
-    #     rooms = []
-
-    #     for _ in range(room_count):
-    #         room_id = int.from_bytes(payload[ptr:ptr+4], 'big')
-    #         ptr += 4
-
-    #         name_len = int.from_bytes(payload[ptr:ptr+4], 'big')
-    #         ptr += 4
-
-    #         room_name = payload[ptr:ptr+name_len].decode()
-    #         ptr += name_len
-
-    #         current_players = int.from_bytes(payload[ptr:ptr+4], 'big')
-    #         ptr += 4
-
-    #         max_players = int.from_bytes(payload[ptr:ptr+4], 'big')
-    #         ptr += 4
-
-    #         state = payload[ptr]
-    #         ptr += 1
-
-    #         room = Room(room_id, room_name, current_players, max_players, state)
-    #         rooms.append(room)
-
-    #     self.rooms = rooms
-    #     return rooms
-    
     def start_game(self, timeout: float = 10.0) -> bool:
         """Start game (room owner only)"""
         if self.state != ConnectionState.IN_ROOM:
@@ -728,8 +686,8 @@ class GameClient:
 def main():
     """Simple CLI interface for testing the client"""
     import sys
-    tcp_port = 8112
-    udp_port = 8113
+    tcp_port = Config.SERVER_PORT_TCP
+    udp_port = Config.SERVER_PORT_UDP
     # if len(sys.argv) != 3:
     #     print("Usage: python client.py <server_host> <tcp_port>")
     #     sys.exit(1)
@@ -738,7 +696,7 @@ def main():
     # tcp_port = int(sys.argv[2])
     # udp_port = tcp_port + 1  # Assume UDP port is TCP port + 1
 
-    host= "192.168.1.40"
+    host= Config.SERVER_IP
     
     client = GameClient(host, tcp_port, udp_port)
     

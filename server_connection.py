@@ -41,7 +41,7 @@ class Payload:
 
 class TestUDPClient:
     id=1
-    def __init__(self, server_ip='192.168.1.40', server_port=8080):
+    def __init__(self, server_ip=Config.SERVER_IP, server_port=Config.SERVER_PORT_UDP):
         self.server_ip = server_ip
         self.server_port = server_port
         self.client_socket = None
