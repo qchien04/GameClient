@@ -210,6 +210,7 @@ class UIManager:
             print(f"Tạo phòng")
             self.client_connect.create_room("P1")
             self.game_state.current_room = Room(1, "P1", 1, 4, 0,[self.client_connect.username],self.client_connect.user_id)
+            self.client_connect.current_room=self.game_state.current_room
             self.game_state.state = ConnectionState.IN_ROOM
     def render_pause(self):
         """Render pause menu"""
@@ -306,6 +307,8 @@ class UIManager:
 
         room = self.client_connect.current_room
 
+        if room is None:
+            return
         # Tiêu đề
         title_surface = self.font_48.render(f"Phòng: {room.room_name}", True, (255, 255, 255))
         self.screen.blit(title_surface, (Config.SCREEN_WIDTH // 2 - title_surface.get_width() // 2, 50))
