@@ -202,6 +202,8 @@ class UIManager:
                 print(f"Tham gia phòng: {room.room_name}")
                 self.game_state.state = ConnectionState.IN_ROOM
                 self.game_state.current_room = room
+                self.game_state.current_room_id = room.room_id
+                self.client_connect.join_room(room.room_id)
                 break  # Chỉ xử lý 1 lần
 
             self.join_buttons.append(join_button)
@@ -209,7 +211,8 @@ class UIManager:
         if create_button.draw(self.screen):
             print(f"Tạo phòng")
             self.client_connect.create_room("P1")
-            self.game_state.current_room = Room(1, "P1", 1, 4, 0,[self.client_connect.username],self.client_connect.user_id)
+            self.game_state.current_room_id = self.client_connect.current_room_id
+            self.game_state.current_room = Room(self.game_state.current_room_id, "P1", 1, 4, 0,[self.client_connect.username],self.client_connect.user_id)
             self.client_connect.current_room=self.game_state.current_room
             self.game_state.state = ConnectionState.IN_ROOM
     def render_pause(self):
