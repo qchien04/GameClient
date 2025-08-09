@@ -319,6 +319,7 @@ class GameClient:
         
         if success:
             self.user_id = user_id
+            Config.PLAYERID=user_id
             self.state = ConnectionState.AUTHENTICATED
             logger.info(f"Login successful, user ID: {user_id}")
         else:
@@ -801,7 +802,3 @@ def main():
     finally:
         client.disconnect()
         print("Disconnected")
-
-
-if __name__ == "__main__":
-    main()

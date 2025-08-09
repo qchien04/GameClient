@@ -21,7 +21,6 @@ class GameManager:
         self.udp_client = TestUDPClient()
         
         self.udp_client.initialize()
-        self.udp_client.send_thread()
         self.udp_client.start()
 
         # Initialize pygame
