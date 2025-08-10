@@ -144,6 +144,7 @@ class GameClient:
             MessageType.START_GAME_RESPONSE: self._handle_start_game_response,
             MessageType.GAME_READY_RESPONSE: self._handle_game_ready_response,
             MessageType.ROOM_STATE_UPDATE: self._handle_room_state_update,
+            MessageType.START_GAME_REQUEST: self._handle_start_game_request,
             MessageType.HEARTBEAT: self._handle_heartbeat,
             MessageType.ERROR_RESPONSE: self._handle_error_response,
         }
@@ -443,6 +444,26 @@ class GameClient:
         success = msg.payload[0] == 1 if msg.payload else False
         if success:
             logger.info("Game started successfully")
+
+    def _handle_start_game_request(self, msg: ProtocolMessage):#after owner send start game request
+        """Handle start game request"""
+        if len(msg.payload) < 4:
+            return
+        ptr=0
+        room_id = struct.unpack('!I', msg.payload[ptr:ptr+4])[0]
+        ptr+=4
+        
+        if room_id != self.current_room_id:
+            return
+        
+        match_id=struct.unpack('!I', msg.payload[ptr:ptr+4])[0]
+        ptr+=4
+
+        Config.MATCHID = match_id
+        
+        self.state = ConnectionState.IN_GAME
+        print("Match started with match id: ",match_id)
+        logger.info("Match started successfully")
     
     def _handle_game_ready_response(self, msg: ProtocolMessage):
         """Handle game ready response"""

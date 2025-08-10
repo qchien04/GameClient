@@ -107,7 +107,7 @@ class TestUDPClient:
             if TestUDPClient.id>-1:
                 player_id = Config.PLAYERID
                 timestamp = int(time.time() * 1000) & 0xFFFFFFFF  # uint32 ms timestamp
-                match_id = 1
+                match_id = Config.MATCHID
                 buffer = struct.pack('!III', player_id, msg_type, match_id) + self.payload.to_bytes()
                 self.client_socket.sendto(buffer, (self.server_ip, self.server_port))
                 #print(f"Gửi tin nhắn tới server, player_id: {player_id}, msg_type: {msg_type}, timestamp: {match_id}, payload: {self.payload}")
