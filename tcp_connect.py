@@ -802,3 +802,7 @@ def main():
     finally:
         client.disconnect()
         print("Disconnected")
+
+
+# if __name__ == "__main__":
+#     main()

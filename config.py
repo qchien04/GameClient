@@ -3,7 +3,7 @@ from pathlib import Path
 class Config:
     SERVER_IP="192.168.1.40"
     SERVER_PORT_TCP=8112
-    SERVER_PORT_UDP=8113
+    SERVER_PORT_UDP=8080
 
 
     PLAYERID=1
