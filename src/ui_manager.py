@@ -162,17 +162,13 @@ class UIManager:
         pygame.mouse.set_visible(True)
         self.screen.blit(self.bg_menu, (0, 0))
         if self.game_state.state == ConnectionState.CONNECTED:
-            print("Client connect state: connected")
             self.render_login_screen()
             return 
         elif self.game_state.state == ConnectionState.AUTHENTICATED:
-            print("Client connect state: authenticated")
             self.render_list_room()
         elif self.client_connect.state == ConnectionState.IN_ROOM:
-            print("Client connect state: in room")
             self.render_room()
         elif self.client_connect.state == ConnectionState.IN_GAME:
-            print("Client connect state: in game")
             self.game_state.start_game=True
 
     def render_list_room(self):
