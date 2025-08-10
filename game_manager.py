@@ -294,6 +294,7 @@ class GameManager:
 
         with self.udp_client.lock:
             if self.udp_client.game_state and "players" in self.udp_client.game_state:
+
                     # if state["action"] == Action.SHOOT and state["target_x"] >0 and state["target_y"] > 0:
                     #     self.audio_manager.play_shot()
                     #     self.bullet_manager.shoot((state["x"]+self.player.width//2, state["y"]+self.player.height//2), (state["target_x"]+self.target.width//2, state["target_y"]+self.target.height//2), self.game_state.kill_count)
@@ -301,7 +302,11 @@ class GameManager:
                     state = self.udp_client.game_state["players"].get(player_id)
                     if state and state["new"]==True:
                         self.udp_client.game_state["players"][player_id]["new"]=False
-                        self.player.set_position(state["x"], state["y"])
+                        if player_id==Config.PLAYERID:
+                            self.player.set_position(state["x"], state["y"])
+                        else:
+                            self.enemy.set_position(state["x"], state["y"])
+                        
 
             if self.udp_client.game_state and "bullets" in self.udp_client.game_state:
                 bullets = self.udp_client.game_state["bullets"]
