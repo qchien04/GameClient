@@ -162,12 +162,18 @@ class UIManager:
         pygame.mouse.set_visible(True)
         self.screen.blit(self.bg_menu, (0, 0))
         if self.game_state.state == ConnectionState.CONNECTED:
+            print("Client connect state: connected")
             self.render_login_screen()
             return 
         elif self.game_state.state == ConnectionState.AUTHENTICATED:
+            print("Client connect state: authenticated")
             self.render_list_room()
-        elif self.game_state.state == ConnectionState.IN_ROOM:
+        elif self.client_connect.state == ConnectionState.IN_ROOM:
+            print("Client connect state: in room")
             self.render_room()
+        elif self.client_connect.state == ConnectionState.IN_GAME:
+            print("Client connect state: in game")
+            self.game_state.start_game=True
 
     def render_list_room(self):
         """Render danh sách phòng chơi"""
@@ -195,6 +201,7 @@ class UIManager:
             if join_button.draw(self.screen):
                 print(f"Tham gia phòng: {room.room_name}")
                 self.game_state.state = ConnectionState.IN_ROOM
+                self.client_connect.state = ConnectionState.IN_ROOM
                 self.game_state.current_room = room
                 self.game_state.current_room_id = room.room_id
                 self.client_connect.join_room(room.room_id)
@@ -209,6 +216,7 @@ class UIManager:
             self.game_state.current_room = Room(self.game_state.current_room_id, "P1", 1, 4, 0,[self.client_connect.username],self.client_connect.user_id)
             self.client_connect.current_room=self.game_state.current_room
             self.game_state.state = ConnectionState.IN_ROOM
+            self.client_connect.state = ConnectionState.IN_ROOM
     def render_pause(self):
         """Render pause menu"""
         pygame.mouse.set_visible(True)
@@ -330,7 +338,6 @@ class UIManager:
             if self.handle_start_button():
                 print("Game bắt đầu!")
                 self.client_connect.start_game()
-                self.game_state.start_game = True  # Gắn cờ để vào game
         else:
             waiting_surface = self.font_24.render("Chờ chủ phòng bắt đầu...", True, (255, 255, 0))
             self.screen.blit(waiting_surface, (Config.SCREEN_WIDTH // 2 - waiting_surface.get_width() // 2, 180))

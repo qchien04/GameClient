@@ -649,6 +649,7 @@ class GameClient:
     def start_game(self, timeout: float = 10.0) -> bool:
         """Start game (room owner only)"""
         if self.state != ConnectionState.IN_ROOM:
+            print("start game state",self.state.name)
             logger.error("Must be in room to start game")
             return False
         
