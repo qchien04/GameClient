@@ -489,6 +489,8 @@ class GameClient:
         ptr += 4
         max_players = struct.unpack('!I', msg.payload[ptr:ptr+4])[0]
         ptr += 4
+        owner_id = struct.unpack('!I', msg.payload[ptr:ptr+4])[0]
+        ptr += 4
         state = msg.payload[ptr]
         ptr += 1
         
@@ -518,8 +520,8 @@ class GameClient:
         # Update current room if it's the same
         if room_id == self.current_room_id:
             print("Update room",room_id)
-            self.current_room = Room(room_id, room_name, current_players, max_players, state, players)
-            logger.info(f"Room {room_name} updated: {current_players}/{max_players} players")
+            self.current_room = Room(room_id, room_name, current_players, max_players, state, players,owner_id)
+            logger.info(f"Room {room_name} updated: {current_players}/{max_players} players, owner_id: {owner_id}")
             logger.info(f"Players: {', '.join(players)}")
     
     def _handle_heartbeat(self, msg: ProtocolMessage):

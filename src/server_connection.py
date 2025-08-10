@@ -118,70 +118,71 @@ class TestUDPClient:
 
     def receive_thread(self):
         while self.running:
-            try:
-                data, addr = self.client_socket.recvfrom(self.BUFFER_SIZE)
+            pass
+            # try:
+            #     data, addr = self.client_socket.recvfrom(self.BUFFER_SIZE)
 
-                offset = 0
-                if len(data) < 8:
-                    print(f"[WARN] Dữ liệu quá ngắn")
-                    continue
+            #     offset = 0
+            #     if len(data) < 8:
+            #         print(f"[WARN] Dữ liệu quá ngắn")
+            #         continue
                 
-                match_id = struct.unpack_from("!i", data, offset)[0]
-                offset += 4
+            #     match_id = struct.unpack_from("!i", data, offset)[0]
+            #     offset += 4
 
-                player_count = struct.unpack_from("!i", data, offset)[0]
-                offset += 4
+            #     player_count = struct.unpack_from("!i", data, offset)[0]
+            #     offset += 4
 
-                print(f"[RECV] Match ID: {match_id}, Players: {player_count}")
+            #     print(f"[RECV] Match ID: {match_id}, Players: {player_count}")
 
-                players = {}
-                for _ in range(player_count):
-                    id = struct.unpack_from("!i", data, offset)[0]
-                    offset += 4
-                    x = struct.unpack_from("!f", data, offset)[0]
-                    offset += 4
-                    y = struct.unpack_from("!f", data, offset)[0]
-                    offset += 4
-                    health = struct.unpack_from("!i", data, offset)[0]
-                    offset += 4
+            #     players = {}
+            #     for _ in range(player_count):
+            #         id = struct.unpack_from("!i", data, offset)[0]
+            #         offset += 4
+            #         x = struct.unpack_from("!f", data, offset)[0]
+            #         offset += 4
+            #         y = struct.unpack_from("!f", data, offset)[0]
+            #         offset += 4
+            #         health = struct.unpack_from("!i", data, offset)[0]
+            #         offset += 4
 
-                    players[id] = {
-                        "x": x,
-                        "y": y,
-                        "health": health,
-                        "new": True
-                    }
+            #         players[id] = {
+            #             "x": x,
+            #             "y": y,
+            #             "health": health,
+            #             "new": True
+            #         }
 
-                bullet_count = struct.unpack_from("!i", data, offset)[0]
-                offset += 4
+            #     bullet_count = struct.unpack_from("!i", data, offset)[0]
+            #     offset += 4
 
-                bullets = []
-                for _ in range(bullet_count):
-                    x = struct.unpack_from("!f", data, offset)[0]
-                    offset += 4
-                    y = struct.unpack_from("!f", data, offset)[0]
-                    offset += 4
-                    bullets.append((x, y))
+            #     bullets = []
+            #     for _ in range(bullet_count):
+            #         x = struct.unpack_from("!f", data, offset)[0]
+            #         offset += 4
+            #         y = struct.unpack_from("!f", data, offset)[0]
+            #         offset += 4
+            #         bullets.append((x, y))
 
-                # In ra thông tin (hoặc cập nhật self.game_state)
-                print("[GAME STATE]")
-                for pid, p in players.items():
-                    print(f" - Player {pid}: x={p['x']:.2f}, y={p['y']:.2f}, hp={p['health']}")
+            #     # In ra thông tin (hoặc cập nhật self.game_state)
+            #     print("[GAME STATE]")
+            #     for pid, p in players.items():
+            #         print(f" - Player {pid}: x={p['x']:.2f}, y={p['y']:.2f}, hp={p['health']}")
 
-                print(f" - Bullets ({len(bullets)}):")
-                for b in bullets:
-                    print(f"    • Bullet at x={b[0]:.2f}, y={b[1]:.2f}")
+            #     print(f" - Bullets ({len(bullets)}):")
+            #     for b in bullets:
+            #         print(f"    • Bullet at x={b[0]:.2f}, y={b[1]:.2f}")
 
-                with self.lock:
-                    self.game_state["match_id"] = match_id
-                    self.game_state["players"] = players
-                    self.game_state["bullets"] = bullets
+            #     with self.lock:
+            #         self.game_state["match_id"] = match_id
+            #         self.game_state["players"] = players
+            #         self.game_state["bullets"] = bullets
                 
-            except BlockingIOError:
-                pass
-            except Exception as e:
-                print(f"[ERROR] {e}")
-            time.sleep(0.01)
+            # except BlockingIOError:
+            #     pass
+            # except Exception as e:
+            #     print(f"[ERROR] {e}")
+            # time.sleep(0.01)
 
 
 # test=TestUDPClient()
