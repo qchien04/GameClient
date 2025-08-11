@@ -196,11 +196,11 @@ class UIManager:
 
             if join_button.draw(self.screen):
                 print(f"Tham gia phòng: {room.room_name}")
-                self.game_state.state = ConnectionState.IN_ROOM
-                self.client_connect.state = ConnectionState.IN_ROOM
                 self.game_state.current_room = room
                 self.game_state.current_room_id = room.room_id
                 self.client_connect.join_room(room.room_id)
+                self.game_state.state = ConnectionState.IN_ROOM
+                self.client_connect.state = ConnectionState.IN_ROOM
                 break  # Chỉ xử lý 1 lần
 
             self.join_buttons.append(join_button)
